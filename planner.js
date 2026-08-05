@@ -81,9 +81,7 @@ const colourControls = {
 --------------------------------- */
 
 let identicalRoundColours = [];
-
 let blanketDesign = [];
-
 let selectedSquareIndex = null;
 
 let lastProjectShape = {
@@ -164,30 +162,7 @@ function formatDimensions(width, height, unit) {
 }
 
 function cloneDesign(design) {
-    return design.map(colour => colour);
-}
-
-function shuffle(array) {
-    const copy = [...array];
-
-    for (
-        let index = copy.length - 1;
-        index > 0;
-        index--
-    ) {
-        const randomIndex =
-            Math.floor(Math.random() * (index + 1));
-
-        [
-            copy[index],
-            copy[randomIndex]
-        ] = [
-            copy[randomIndex],
-            copy[index]
-        ];
-    }
-
-    return copy;
+    return [...design];
 }
 
 /* ---------------------------------
@@ -431,7 +406,6 @@ function createPaletteRow(
             }
 
             row.remove();
-
             handlePaletteChange();
         }
     );
@@ -494,7 +468,6 @@ function connectExistingPaletteRows() {
                 }
 
                 row.remove();
-
                 handlePaletteChange();
             }
         );
@@ -518,9 +491,7 @@ function updateRemoveButtons() {
 
 function handlePaletteChange() {
     updateRemoveButtons();
-
     updateIdenticalRoundControls();
-
     updateFixedOuterOptions();
 
     const project =
@@ -753,9 +724,13 @@ function getRandomSquareDesign(
             isOuterRound &&
             colourControls.fixedOuterEnabled.checked
         ) {
-            design.push(
-                colourControls.fixedOuterColour.value
-            );
+            const fixedColour =
+                colourControls.fixedOuterColour.value;
+
+            design.push(fixedColour);
+
+            colourUsage[fixedColour] =
+                (colourUsage[fixedColour] || 0) + 1;
 
             continue;
         }
@@ -1164,8 +1139,11 @@ function createSquareRound(
     layer.style.background =
         colour;
 
+    /*
+    Inner rounds need to sit above outer rounds.
+    */
     layer.style.zIndex =
-        String(roundIndex + 1);
+        String(totalRounds - roundIndex);
 
     return layer;
 }
@@ -1173,10 +1151,11 @@ function createSquareRound(
 function buildBlanketGrid(project) {
     output.grid.innerHTML = "";
 
-    output.grid.style.setProperty(
-        "--columns",
-        project.squaresWide
-    );
+    /*
+    Explicit columns work reliably in mobile Safari.
+    */
+    output.grid.style.gridTemplateColumns =
+        `repeat(${project.squaresWide}, minmax(0, 1fr))`;
 
     for (
         let squareIndex = 0;
@@ -1208,11 +1187,6 @@ function buildBlanketGrid(project) {
             blanketDesign[squareIndex] ||
             identicalRoundColours;
 
-        /*
-        Add the outermost round first,
-        then work inward so the centre
-        remains visible.
-        */
         for (
             let roundIndex =
                 design.length - 1;
@@ -1393,11 +1367,8 @@ colourControls.randomizeBlanket.addEventListener(
 --------------------------------- */
 
 connectExistingPaletteRows();
-
 updateRemoveButtons();
-
 updateIdenticalRoundControls();
-
 updateFixedOuterOptions();
 
 colourControls.fixedOuterField.hidden =
@@ -1407,11 +1378,7 @@ const initialProject =
     calculateProject();
 
 applyIdenticalDesign(initialProject);
-
 rememberProjectShape(initialProject);
-
 updateSummary(initialProject);
-
 updateEquations(initialProject);
-
 buildBlanketGrid(initialProject);
