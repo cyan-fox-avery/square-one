@@ -1,1 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Square One</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+<body>
+
+    <main>
+
+        <header class="page-header">
+
+            <h1>Square One</h1>
+
+            <p>
+                Plan your granny square blanket before
+                you crochet a single stitch.
+            </p>
+
+        </header>
+
+        <section class="planner">
+
+            <h2>Blanket Settings</h2>
+
+            <div class="input-grid">
+
+                <label>
+
+                    Squares Wide
+
+                    <input
+                        id="squares-wide"
+                        type="number"
+                        min="1"
+                        value="10"
+                    >
+
+                </label>
+
+                <label>
+
+                    Squares Tall
+
+                    <input
+                        id="squares-tall"
+                        type="number"
+                        min="1"
+                        value="12"
+                    >
+
+                </label>
+
+                <label>
+
+                    Rounds Per Square
+
+                    <input
+                        id="rounds"
+                        type="number"
+                        min="1"
+                        value="5"
+                    >
+
+                </label>
+
+                <label>
+
+                    Stitch Height
+
+                    <input
+                        id="stitch-height"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value="0.5"
+                    >
+
+                </label>
+
+                <label>
+
+                    Unit
+
+                    <select id="unit">
+
+                        <option value="in">
+                            Inches
+                        </option>
+
+                        <option value="cm">
+                            Centimetres
+                        </option>
+
+                    </select>
+
+                </label>
+
+                <label>
+
+                    Border Width
+
+                    <input
+                        id="border-width"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value="0"
+                    >
+
+                </label>
+
+            </div>
+
+        </section>
+
+        <section class="results">
+
+            <h2>Project Summary</h2>
+
+            <div class="summary-grid">
+
+                <div class="summary-card">
+
+                    <h3>Total Squares</h3>
+
+                    <p id="total-squares">
+                        --
+                    </p>
+
+                </div>
+
+                <div class="summary-card">
+
+                    <h3>Blanket Width</h3>
+
+                    <p id="blanket-width">
+                        --
+                    </p>
+
+                </div>
+
+                <div class="summary-card">
+
+                    <h3>Blanket Height</h3>
+
+                    <p id="blanket-height">
+                        --
+                    </p>
+
+                </div>
+
+                <div class="summary-card">
+
+                    <h3>Total Rounds</h3>
+
+                    <p id="total-rounds">
+                        --
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="preview">
+
+            <h2>Blanket Preview</h2>
+
+            <div id="blanket-grid">
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="planner.js"></script>
+
+</body>
+
+</html>
