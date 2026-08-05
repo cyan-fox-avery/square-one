@@ -153,6 +153,310 @@
 
         </section>
 
+        <section class="colour-planner">
+
+            <h2>Colour Design</h2>
+
+            <label class="mode-field">
+                Design Mode
+
+                <select id="design-mode">
+
+                    <option value="identical">
+                        Identical Squares
+                    </option>
+
+                    <option value="randomized">
+                        Randomized Squares
+                    </option>
+
+                    <option value="custom">
+                        Custom Squares
+                    </option>
+
+                </select>
+            </label>
+
+            <div class="mode-description">
+
+                <p id="mode-description">
+                    Every square uses the same colours
+                    in the same round order.
+                </p>
+
+            </div>
+
+            <div class="palette-heading">
+
+                <div>
+
+                    <h3>Colour Palette</h3>
+
+                    <p>
+                        Give each yarn colour a name and choose
+                        a matching swatch.
+                    </p>
+
+                </div>
+
+                <button
+                    id="add-colour"
+                    type="button"
+                >
+                    Add Colour
+                </button>
+
+            </div>
+
+            <div id="palette-list">
+
+                <div class="palette-row">
+
+                    <input
+                        class="palette-colour"
+                        type="color"
+                        value="#7f5364"
+                        aria-label="Colour swatch"
+                    >
+
+                    <input
+                        class="palette-name"
+                        type="text"
+                        value="Mulberry"
+                        aria-label="Colour name"
+                    >
+
+                    <button
+                        class="remove-colour"
+                        type="button"
+                        aria-label="Remove Mulberry"
+                    >
+                        Remove
+                    </button>
+
+                </div>
+
+                <div class="palette-row">
+
+                    <input
+                        class="palette-colour"
+                        type="color"
+                        value="#d6aeb9"
+                        aria-label="Colour swatch"
+                    >
+
+                    <input
+                        class="palette-name"
+                        type="text"
+                        value="Dusty Rose"
+                        aria-label="Colour name"
+                    >
+
+                    <button
+                        class="remove-colour"
+                        type="button"
+                        aria-label="Remove Dusty Rose"
+                    >
+                        Remove
+                    </button>
+
+                </div>
+
+                <div class="palette-row">
+
+                    <input
+                        class="palette-colour"
+                        type="color"
+                        value="#ead6dc"
+                        aria-label="Colour swatch"
+                    >
+
+                    <input
+                        class="palette-name"
+                        type="text"
+                        value="Blush"
+                        aria-label="Colour name"
+                    >
+
+                    <button
+                        class="remove-colour"
+                        type="button"
+                        aria-label="Remove Blush"
+                    >
+                        Remove
+                    </button>
+
+                </div>
+
+                <div class="palette-row">
+
+                    <input
+                        class="palette-colour"
+                        type="color"
+                        value="#a96d80"
+                        aria-label="Colour swatch"
+                    >
+
+                    <input
+                        class="palette-name"
+                        type="text"
+                        value="Berry"
+                        aria-label="Colour name"
+                    >
+
+                    <button
+                        class="remove-colour"
+                        type="button"
+                        aria-label="Remove Berry"
+                    >
+                        Remove
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div
+                id="identical-options"
+                class="design-options"
+            >
+
+                <h3>Round Colours</h3>
+
+                <p>
+                    Choose the colour used for each round.
+                </p>
+
+                <div id="round-colour-list">
+                    <!-- Created by planner.js -->
+                </div>
+
+            </div>
+
+            <div
+                id="randomized-options"
+                class="design-options"
+                hidden
+            >
+
+                <h3>Randomization Rules</h3>
+
+                <div class="checkbox-list">
+
+                    <label class="checkbox-row">
+
+                        <input
+                            id="balance-colours"
+                            type="checkbox"
+                            checked
+                        >
+
+                        Balance colour use across the blanket
+
+                    </label>
+
+                    <label class="checkbox-row">
+
+                        <input
+                            id="prevent-round-repeats"
+                            type="checkbox"
+                            checked
+                        >
+
+                        Do not repeat a colour within one square
+
+                    </label>
+
+                    <label class="checkbox-row">
+
+                        <input
+                            id="avoid-identical-squares"
+                            type="checkbox"
+                            checked
+                        >
+
+                        Avoid identical square combinations
+
+                    </label>
+
+                    <label class="checkbox-row">
+
+                        <input
+                            id="avoid-matching-neighbours"
+                            type="checkbox"
+                            checked
+                        >
+
+                        Avoid matching neighbouring squares
+
+                    </label>
+
+                    <label class="checkbox-row">
+
+                        <input
+                            id="fixed-outer-enabled"
+                            type="checkbox"
+                        >
+
+                        Use one fixed colour for every outer round
+
+                    </label>
+
+                </div>
+
+                <label
+                    id="fixed-outer-field"
+                    hidden
+                >
+                    Fixed Outer Colour
+
+                    <select id="fixed-outer-colour">
+                        <!-- Created by planner.js -->
+                    </select>
+                </label>
+
+                <button
+                    id="randomize-blanket"
+                    type="button"
+                    class="primary-button"
+                >
+                    Randomize Blanket
+                </button>
+
+            </div>
+
+            <div
+                id="custom-options"
+                class="design-options"
+                hidden
+            >
+
+                <h3>Custom Square Editor</h3>
+
+                <p>
+                    Tap any square in the blanket preview
+                    to edit its individual round colours.
+                </p>
+
+                <div
+                    id="selected-square-panel"
+                    class="selected-square-panel"
+                >
+
+                    <p id="selected-square-message">
+                        No square selected.
+                    </p>
+
+                    <div id="selected-square-rounds">
+                        <!-- Created by planner.js -->
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
         <section class="results">
 
             <h2>Project Summary</h2>
@@ -265,7 +569,29 @@
 
         <section class="preview">
 
-            <h2>Blanket Preview</h2>
+            <div class="preview-heading">
+
+                <div>
+
+                    <h2>Blanket Preview</h2>
+
+                    <p>
+                        Each coloured layer represents
+                        one crochet round.
+                    </p>
+
+                </div>
+
+                <button
+                    id="save-image"
+                    type="button"
+                    disabled
+                    title="Image export will be added soon"
+                >
+                    Save Image
+                </button>
+
+            </div>
 
             <div class="preview-frame">
 
@@ -277,6 +603,15 @@
             </div>
 
         </section>
+
+        <footer class="page-footer">
+
+            <p>
+                Measurements are estimates. Finished size may vary
+                with yarn, hook, tension, stitch pattern, and blocking.
+            </p>
+
+        </footer>
 
     </main>
 
