@@ -575,14 +575,38 @@ button:hover {
 .blanket-square {
     position: relative;
 
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
     aspect-ratio: 1;
 
+    margin: 0;
+    padding: 0;
+
+    display: block;
+
+    color: inherit;
     background: #f1e8e1;
 
     border: 1px solid rgba(63, 43, 35, 0.22);
     border-radius: 3px;
 
     overflow: hidden;
+
+    appearance: none;
+    -webkit-appearance: none;
+
+    font: inherit;
+    line-height: 1;
+}
+
+.blanket-square:hover {
+    border-color: rgba(63, 43, 35, 0.5);
+}
+
+.blanket-square:focus {
+    outline: 2px solid var(--accent-dark);
+    outline-offset: -2px;
 }
 
 .blanket-square.selected {
@@ -594,6 +618,8 @@ button:hover {
     position: absolute;
 
     border-radius: 2px;
+
+    pointer-events: none;
 }
 
 .page-footer {
@@ -604,8 +630,8 @@ button:hover {
 }
 
 .page-footer p {
-    margin: 0 auto;
     max-width: 680px;
+    margin: 0 auto;
 
     color: var(--muted);
 
