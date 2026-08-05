@@ -2,12 +2,16 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#f4efe7"
     >
 
     <title>Square One</title>
@@ -16,7 +20,6 @@
         rel="stylesheet"
         href="style.css"
     >
-
 </head>
 
 <body>
@@ -41,61 +44,55 @@
             <div class="input-grid">
 
                 <label>
-
-                    Squares Wide
+                    Squares Across
 
                     <input
                         id="squares-wide"
                         type="number"
                         min="1"
+                        max="100"
                         value="10"
                     >
-
                 </label>
 
                 <label>
-
-                    Squares Tall
+                    Squares Down
 
                     <input
                         id="squares-tall"
                         type="number"
                         min="1"
+                        max="100"
                         value="12"
                     >
-
                 </label>
 
                 <label>
-
-                    Rounds Per Square
+                    Rounds per Square
 
                     <input
                         id="rounds"
                         type="number"
                         min="1"
+                        max="50"
                         value="5"
                     >
-
                 </label>
 
                 <label>
-
-                    Stitch Height
+                    Growth per Round
 
                     <input
-                        id="stitch-height"
+                        id="round-growth"
                         type="number"
-                        min="0"
+                        min="0.01"
                         step="0.01"
                         value="0.5"
                     >
-
                 </label>
 
                 <label>
-
-                    Unit
+                    Primary Unit
 
                     <select id="unit">
 
@@ -108,24 +105,51 @@
                         </option>
 
                     </select>
-
                 </label>
 
                 <label>
-
-                    Border Width
+                    Joining Width
 
                     <input
-                        id="border-width"
+                        id="join-width"
                         type="number"
                         min="0"
                         step="0.01"
                         value="0"
                     >
+                </label>
 
+                <label>
+                    Border Rounds
+
+                    <input
+                        id="border-rounds"
+                        type="number"
+                        min="0"
+                        max="50"
+                        value="0"
+                    >
+                </label>
+
+                <label>
+                    Border Growth per Round
+
+                    <input
+                        id="border-growth"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value="0.5"
+                    >
                 </label>
 
             </div>
+
+            <p class="field-note">
+                Growth per round means the distance one round
+                adds outward from a single edge. Each round adds
+                that amount to both sides of the square.
+            </p>
 
         </section>
 
@@ -147,29 +171,89 @@
 
                 <div class="summary-card">
 
-                    <h3>Blanket Width</h3>
+                    <h3>Square Size</h3>
 
-                    <p id="blanket-width">
+                    <p id="square-size">
                         --
                     </p>
 
                 </div>
 
                 <div class="summary-card">
+
+                    <h3>Before Border</h3>
+
+                    <p id="before-border">
+                        --
+                    </p>
+
+                </div>
+
+                <div class="summary-card">
+
+                    <h3>Finished Size</h3>
+
+                    <p id="finished-size">
+                        --
+                    </p>
+
+                </div>
+
+                <div class="summary-card">
+
+                    <h3>Total Square Rounds</h3>
+
+                    <p id="total-rounds">
+                        --
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="calculations">
+
+            <h2>How It Was Calculated</h2>
+
+            <div class="equation-list">
+
+                <div class="equation">
+
+                    <h3>Square Size</h3>
+
+                    <p id="square-equation">
+                        --
+                    </p>
+
+                </div>
+
+                <div class="equation">
+
+                    <h3>Blanket Width</h3>
+
+                    <p id="width-equation">
+                        --
+                    </p>
+
+                </div>
+
+                <div class="equation">
 
                     <h3>Blanket Height</h3>
 
-                    <p id="blanket-height">
+                    <p id="height-equation">
                         --
                     </p>
 
                 </div>
 
-                <div class="summary-card">
+                <div class="equation">
 
-                    <h3>Total Rounds</h3>
+                    <h3>Border</h3>
 
-                    <p id="total-rounds">
+                    <p id="border-equation">
                         --
                     </p>
 
@@ -183,7 +267,12 @@
 
             <h2>Blanket Preview</h2>
 
-            <div id="blanket-grid">
+            <div class="preview-frame">
+
+                <div
+                    id="blanket-grid"
+                    aria-label="Blanket layout preview"
+                ></div>
 
             </div>
 
