@@ -12,7 +12,9 @@ const inputs = {
     unit: document.getElementById("unit"),
     joinWidth: document.getElementById("join-width"),
     borderRounds: document.getElementById("border-rounds"),
-    borderGrowth: document.getElementById("border-growth")
+    borderGrowth: document.getElementById("border-growth"),
+    joinColour: document.getElementById("join-colour"),
+    borderColour: document.getElementById("border-colour")
 };
 
 const output = {
@@ -27,7 +29,11 @@ const output = {
     heightEquation: document.getElementById("height-equation"),
     borderEquation: document.getElementById("border-equation"),
 
-    grid: document.getElementById("blanket-grid")
+    grid: document.getElementById("blanket-grid"),
+    blanketView: document.getElementById("blanket-view"),
+
+    balanceList: document.getElementById("balance-list"),
+    balanceNote: document.getElementById("balance-note")
 };
 
 const colourControls = {
@@ -68,6 +74,13 @@ const colourControls = {
         "randomize-blanket"
     ),
 
+    candidatePanel: document.getElementById(
+        "candidate-panel"
+    ),
+    candidateList: document.getElementById(
+        "candidate-list"
+    ),
+
     selectedSquareMessage: document.getElementById(
         "selected-square-message"
     ),
@@ -83,6 +96,9 @@ const colourControls = {
 let identicalRoundColours = [];
 let blanketDesign = [];
 let selectedSquareIndex = null;
+
+let candidateSlots = [];
+let activeCandidate = -1;
 
 let lastProjectShape = {
     width: 0,
@@ -511,6 +527,8 @@ function handlePaletteChange() {
     if (mode === "custom") {
         repairCustomDesign(project);
     }
+
+    clearCandidates();
 
     buildBlanketGrid(project);
     updateCustomEditor(project);
@@ -1010,6 +1028,8 @@ function updateDesignMode() {
         repairCustomDesign(project);
     }
 
+    clearCandidates();
+
     buildBlanketGrid(project);
     updateCustomEditor(project);
 }
@@ -1215,6 +1235,289 @@ function buildBlanketGrid(project) {
 
         output.grid.appendChild(square);
     }
+
+    styleBlanketView(project);
+    updateBalance(project);
+}
+
+/* ---------------------------------
+   BLANKET VIEW (joining + border)
+--------------------------------- */
+
+function styleBlanketView(project) {
+    const frame =
+        output.blanketView.parentElement;
+
+    const frameStyle =
+        window.getComputedStyle(frame);
+
+    const frameInner =
+        frame.clientWidth -
+        parseFloat(frameStyle.paddingLeft) -
+        parseFloat(frameStyle.paddingRight);
+
+    const viewWidth = Math.min(
+        Math.max(frameInner, 0),
+        760
+    );
+
+    const scale =
+        project.finishedWidth > 0
+            ? viewWidth / project.finishedWidth
+            : 0;
+
+    const borderPx =
+        project.borderAddedPerSide * scale;
+
+    const joinPx =
+        project.joinWidth * scale;
+
+    output.blanketView.style.padding =
+        borderPx > 0.5
+            ? `${borderPx}px`
+            : "0px";
+
+    output.blanketView.style.background =
+        inputs.borderColour.value;
+
+    output.grid.style.gap =
+        joinPx > 0.25
+            ? `${joinPx}px`
+            : "0px";
+
+    output.grid.style.background =
+        inputs.joinColour.value;
+}
+
+/* ---------------------------------
+   COLOUR BALANCE
+--------------------------------- */
+
+function updateBalance(project) {
+    const counts = new Map();
+    let total = 0;
+
+    blanketDesign.forEach(design => {
+        design.forEach(colour => {
+            const key = String(
+                colour
+            ).toLowerCase();
+
+            counts.set(
+                key,
+                (counts.get(key) || 0) + 1
+            );
+
+            total++;
+        });
+    });
+
+    output.balanceList.innerHTML = "";
+
+    if (total === 0) {
+        output.balanceNote.hidden = true;
+        return;
+    }
+
+    const palette = getPalette();
+
+    const nameFor = key => {
+        const found = palette.find(
+            item =>
+                item.colour.toLowerCase() ===
+                key
+        );
+
+        return found ? found.name : key;
+    };
+
+    const rows = [...counts.entries()].sort(
+        (a, b) => b[1] - a[1]
+    );
+
+    rows.forEach(([key, count]) => {
+        const percent =
+            (count / total) * 100;
+
+        const row =
+            document.createElement("div");
+
+        row.className = "balance-row";
+
+        const swatch =
+            document.createElement("span");
+
+        swatch.className =
+            "balance-swatch";
+
+        swatch.style.background = key;
+
+        const name =
+            document.createElement("span");
+
+        name.className = "balance-name";
+        name.textContent = nameFor(key);
+
+        const bar =
+            document.createElement("div");
+
+        bar.className = "balance-bar";
+
+        const fill =
+            document.createElement("span");
+
+        fill.style.width = `${percent}%`;
+        fill.style.background = key;
+
+        bar.appendChild(fill);
+
+        const pct =
+            document.createElement("span");
+
+        pct.className = "balance-pct";
+        pct.textContent = `${Math.round(
+            percent
+        )}%`;
+
+        row.append(swatch, name, bar, pct);
+
+        output.balanceList.appendChild(row);
+    });
+
+    const [topKey, topCount] = rows[0];
+    const topShare = topCount / total;
+
+    if (topShare > 0.45 && rows.length > 1) {
+        output.balanceNote.textContent =
+            `${nameFor(
+                topKey
+            )} is doing a lot of the work at ` +
+            `${Math.round(
+                topShare * 100
+            )}% of all rounds.`;
+
+        output.balanceNote.hidden = false;
+    } else {
+        output.balanceNote.hidden = true;
+    }
+}
+
+/* ---------------------------------
+   KEPT ROLLS (compare candidates)
+--------------------------------- */
+
+const MAX_CANDIDATES = 4;
+
+function designKey(design) {
+    return design
+        .map(square => square.join("|"))
+        .join("||");
+}
+
+function stashWorkingDesign() {
+    if (
+        colourControls.designMode.value !==
+        "randomized"
+    ) {
+        return;
+    }
+
+    if (!blanketDesign.length) {
+        return;
+    }
+
+    const key = designKey(blanketDesign);
+
+    const alreadyKept = candidateSlots.some(
+        slot => designKey(slot) === key
+    );
+
+    if (alreadyKept) {
+        return;
+    }
+
+    candidateSlots.unshift(
+        blanketDesign.map(cloneDesign)
+    );
+
+    if (
+        candidateSlots.length >
+        MAX_CANDIDATES
+    ) {
+        candidateSlots.pop();
+    }
+
+    activeCandidate = -1;
+    renderCandidates();
+}
+
+function clearCandidates() {
+    candidateSlots = [];
+    activeCandidate = -1;
+    renderCandidates();
+}
+
+function renderCandidates() {
+    const panel =
+        colourControls.candidatePanel;
+
+    const list =
+        colourControls.candidateList;
+
+    list.innerHTML = "";
+
+    panel.hidden =
+        candidateSlots.length === 0;
+
+    if (candidateSlots.length === 0) {
+        return;
+    }
+
+    candidateSlots.forEach((slot, index) => {
+        const pill =
+            document.createElement("button");
+
+        pill.type = "button";
+
+        pill.className =
+            "candidate-pill" +
+            (index === activeCandidate
+                ? " active"
+                : "");
+
+        pill.textContent = `Roll ${index +
+            1}`;
+
+        pill.setAttribute(
+            "aria-pressed",
+            String(index === activeCandidate)
+        );
+
+        pill.addEventListener("click", () => {
+            restoreCandidate(index);
+        });
+
+        list.appendChild(pill);
+    });
+}
+
+function restoreCandidate(index) {
+    const slot = candidateSlots[index];
+
+    if (!slot) {
+        return;
+    }
+
+    stashWorkingDesign();
+
+    blanketDesign = slot.map(cloneDesign);
+    activeCandidate = index;
+
+    const project =
+        calculateProject();
+
+    buildBlanketGrid(project);
+    renderCandidates();
 }
 
 /* ---------------------------------
@@ -1266,6 +1569,7 @@ function updatePlanner() {
             repairCustomDesign(project);
         }
 
+        clearCandidates();
         rememberProjectShape(project);
     }
 
@@ -1336,11 +1640,15 @@ colourControls.fixedOuterColour.addEventListener(
 colourControls.randomizeBlanket.addEventListener(
     "click",
     () => {
+        stashWorkingDesign();
+
         const project =
             calculateProject();
 
         randomizeBlanket(project);
+        activeCandidate = -1;
         buildBlanketGrid(project);
+        renderCandidates();
     }
 );
 
