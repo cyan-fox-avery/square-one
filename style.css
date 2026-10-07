@@ -630,6 +630,12 @@ button:hover {
     padding: 6px;
 }
 
+/* Rolls */
+
+#rolls-section .primary-button {
+    margin-top: 0;
+}
+
 /* Colour balance */
 
 .balance > p {
