@@ -85,6 +85,10 @@ const colourControls = {
         "candidate-list"
     ),
 
+    saveImage: document.getElementById(
+        "save-image"
+    ),
+
     selectedSquareMessage: document.getElementById(
         "selected-square-message"
     ),
@@ -1528,6 +1532,177 @@ function restoreCandidate(index) {
 }
 
 /* ---------------------------------
+   IMAGE EXPORT
+--------------------------------- */
+
+function exportBlanketImage() {
+    const project =
+        calculateProject();
+
+    if (
+        !blanketDesign.length ||
+        project.finishedWidth <= 0 ||
+        project.finishedHeight <= 0
+    ) {
+        return;
+    }
+
+    const EXPORT_WIDTH = 1520;
+
+    const scale =
+        EXPORT_WIDTH / project.finishedWidth;
+
+    const canvas =
+        document.createElement("canvas");
+
+    canvas.width = Math.round(
+        project.finishedWidth * scale
+    );
+
+    canvas.height = Math.round(
+        project.finishedHeight * scale
+    );
+
+    const ctx = canvas.getContext("2d");
+
+    if (!ctx) {
+        return;
+    }
+
+    const borderPx =
+        project.borderAddedPerSide * scale;
+
+    const joinPx =
+        project.joinWidth * scale;
+
+    const squarePx =
+        project.squareSize * scale;
+
+    // Border bed.
+    ctx.fillStyle =
+        inputs.borderColour.value;
+
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    // Joining bed.
+    ctx.fillStyle =
+        inputs.joinColour.value;
+
+    ctx.fillRect(
+        borderPx,
+        borderPx,
+        canvas.width - borderPx * 2,
+        canvas.height - borderPx * 2
+    );
+
+    // Squares, outermost round first so inner
+    // rounds paint over them like the preview.
+    for (
+        let squareIndex = 0;
+        squareIndex < project.totalSquares;
+        squareIndex++
+    ) {
+        const column =
+            squareIndex % project.squaresWide;
+
+        const row = Math.floor(
+            squareIndex / project.squaresWide
+        );
+
+        const sx =
+            borderPx +
+            column * (squarePx + joinPx);
+
+        const sy =
+            borderPx +
+            row * (squarePx + joinPx);
+
+        const design =
+            blanketDesign[squareIndex] ||
+            identicalRoundColours;
+
+        const rounds = design.length;
+
+        if (!rounds) {
+            continue;
+        }
+
+        for (
+            let roundIndex = rounds - 1;
+            roundIndex >= 0;
+            roundIndex--
+        ) {
+            const inset =
+                ((rounds - 1 - roundIndex) /
+                    rounds) *
+                0.46 *
+                squarePx;
+
+            const x = sx + inset;
+            const y = sy + inset;
+            const size = squarePx - inset * 2;
+
+            if (size <= 0) {
+                continue;
+            }
+
+            ctx.fillStyle = design[roundIndex];
+
+            if (ctx.roundRect) {
+                ctx.beginPath();
+
+                ctx.roundRect(
+                    x,
+                    y,
+                    size,
+                    size,
+                    Math.min(4, size * 0.04)
+                );
+
+                ctx.fill();
+            } else {
+                ctx.fillRect(x, y, size, size);
+            }
+        }
+
+        ctx.strokeStyle =
+            "rgba(63, 43, 35, 0.25)";
+
+        ctx.lineWidth = Math.max(1, scale * 0.08);
+
+        ctx.strokeRect(sx, sy, squarePx, squarePx);
+    }
+
+    canvas.toBlob(blob => {
+        if (!blob) {
+            return;
+        }
+
+        const url = URL.createObjectURL(blob);
+
+        const link =
+            document.createElement("a");
+
+        link.href = url;
+        link.download = "square-one-blanket.png";
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        setTimeout(
+            () => URL.revokeObjectURL(url),
+            4000
+        );
+    }, "image/png");
+}
+
+/* ---------------------------------
    PROJECT UPDATES
 --------------------------------- */
 
@@ -1656,6 +1831,13 @@ colourControls.randomizeBlanket.addEventListener(
         activeCandidate = -1;
         buildBlanketGrid(project);
         renderCandidates();
+    }
+);
+
+colourControls.saveImage.addEventListener(
+    "click",
+    () => {
+        exportBlanketImage();
     }
 );
 
