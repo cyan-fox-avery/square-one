@@ -74,6 +74,10 @@ const colourControls = {
         "randomize-blanket"
     ),
 
+    rollsSection: document.getElementById(
+        "rolls-section"
+    ),
+
     candidatePanel: document.getElementById(
         "candidate-panel"
     ),
@@ -999,6 +1003,9 @@ function updateDesignMode() {
     colourControls.customOptions.hidden =
         mode !== "custom";
 
+    colourControls.rollsSection.hidden =
+        mode !== "randomized";
+
     const descriptions = {
         identical:
             "Every square uses the same colours in the same round order.",
@@ -1681,6 +1688,10 @@ updateFixedOuterOptions();
 
 colourControls.fixedOuterField.hidden =
     !colourControls.fixedOuterEnabled.checked;
+
+colourControls.rollsSection.hidden =
+    colourControls.designMode.value !==
+    "randomized";
 
 const initialProject =
     calculateProject();
