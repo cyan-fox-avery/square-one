@@ -143,6 +143,26 @@
                     >
                 </label>
 
+                <label>
+                    Joining Colour
+
+                    <input
+                        id="join-colour"
+                        type="color"
+                        value="#f3ead9"
+                    >
+                </label>
+
+                <label>
+                    Border Colour
+
+                    <input
+                        id="border-colour"
+                        type="color"
+                        value="#f3ead9"
+                    >
+                </label>
+
             </div>
 
             <p class="field-note">
@@ -423,6 +443,24 @@
                     Randomize Blanket
                 </button>
 
+                <div
+                    id="candidate-panel"
+                    hidden
+                >
+
+                    <h3>Kept Rolls</h3>
+
+                    <p>
+                        Earlier rolls are kept here so you
+                        can flip between them and compare.
+                    </p>
+
+                    <div id="candidate-list">
+                        <!-- Created by planner.js -->
+                    </div>
+
+                </div>
+
             </div>
 
             <div
@@ -567,6 +605,28 @@
 
         </section>
 
+        <section class="balance">
+
+            <h2>Colour Balance</h2>
+
+            <p>
+                Share of every square round across the
+                whole blanket. Joining and border are
+                not counted here.
+            </p>
+
+            <div id="balance-list">
+                <!-- Created by planner.js -->
+            </div>
+
+            <p
+                id="balance-note"
+                class="balance-note"
+                hidden
+            ></p>
+
+        </section>
+
         <section class="preview">
 
             <div class="preview-heading">
@@ -577,7 +637,8 @@
 
                     <p>
                         Each coloured layer represents
-                        one crochet round.
+                        one crochet round. Joining and
+                        border are drawn to scale.
                     </p>
 
                 </div>
@@ -595,10 +656,14 @@
 
             <div class="preview-frame">
 
-                <div
-                    id="blanket-grid"
-                    aria-label="Blanket layout preview"
-                ></div>
+                <div id="blanket-view">
+
+                    <div
+                        id="blanket-grid"
+                        aria-label="Blanket layout preview"
+                    ></div>
+
+                </div>
 
             </div>
 
